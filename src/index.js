@@ -198,5 +198,5 @@ client.on('messageCreate', async (msg) => {
 
 });
 
-// update haha
+
 client.login("MTI1MzMzODU5MTUyNzA0MzA3Mw.GE-jJg.p39y8Qllff-F_NFs0gplklOP_wPN9_TWzz9trw");
