@@ -1,9 +1,7 @@
 
-import { Client, Guild, IntentsBitField } from 'discord.js';
+import { Client, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv'
 dotenv.config()
-
-console.log(process.env.DISCORD_TOKEN);
 
 const client = new Client({
     intents: [
@@ -28,7 +26,7 @@ client.on('messageCreate', async (msg) => {
     if(msg.author.bot) return;
 
     let command = msg.content.split(' ')[0].toLowerCase();
-    console.log(`Command: ${command}, user: ${msg.author}`);
+    console.log(`Command: ${command}, user: ${msg.author.displayName}`);
     
     function get_rng(range, floor = true) {
         if(floor)
@@ -47,12 +45,13 @@ client.on('messageCreate', async (msg) => {
             "gaymeter",
             "futel [user]",
             "pisica",
-            "adunarea"
+            "adunarea",
+            "dami [pisica, caine, rata, vulpe, anime-nsfw, anime-sfw] [count (max 5)]",
         ]
 
         let str = '+-----------COMMANDS-----------+\n';
         commands.forEach((command) => {
-            str += `-> ${command}\n`
+            str += `➡ ${command}\n`
         })
         str += '+---------------------------------+'
         msg.reply(str);
@@ -173,18 +172,127 @@ client.on('messageCreate', async (msg) => {
         
     }
 
-    if(command === 'pisica') {
-        await fetch('https://api.thecatapi.com/v1/images/search').then((resp) => resp.json()).then((x) => {
-            msg.reply({
-                content: "Poftiti domnule",
-                files: [{
-                    attachment: x[0].url
-                }]
+    if(command === 'dami') {
+        let arr = msg.content.split(' ');
+        arr.shift()
+
+        let count = arr[1];
+        if(!isNaN(count))  {
+            if(count > 5) {
+                msg.reply('ABUZ !')
+                count = 1;
+            }else {
+                Number(arr[1])
+            }
+            
+        }else {
+            count = 1;
+        }
+        
+        async function get_duck() {
+            await fetch('https://random-d.uk/api/random').then((resp) => resp.json()).then((x) => {
+                msg.reply({
+                    files: [{
+                        attachment: x.url
+                    }]
+                })
             })
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+            .catch((err) => {
+                console.log(err);
+                msg.reply("S-a futut API");
+            })
+        }
+
+        async function get_cat() {
+            await fetch('https://api.thecatapi.com/v1/images/search').then((resp) => resp.json()).then((x) => {
+                msg.reply({
+                    files: [{
+                        attachment: x[0].url
+                    }]
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                msg.reply("S-a futut API");
+            })
+        }
+
+        async function get_dog() {
+            await fetch(' https://dog.ceo/api/breeds/image/random').then((resp) => resp.json()).then((x) => {
+                msg.reply({
+                    files: [{
+                        attachment: x.message
+                    }]
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                msg.reply("S-a futut API");
+            })
+        }
+
+        async function get_fox() {
+            await fetch('https://randomfox.ca/floof/').then((resp) => resp.json()).then((x) => {
+                msg.reply({
+                    files: [{
+                        attachment: x.image
+                    }]
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                msg.reply("S-a futut API");
+            })
+        }
+
+        async function get_anime(category) {
+            await fetch(`https://api.waifu.pics/${category.split('-')[1]}/waifu`).then((resp) => resp.json()).then((x) => {
+                msg.reply({
+                    files: [{
+                        attachment: x.url
+                    }]
+                })
+            })
+            .catch((err) => {
+                console.log(err);
+                msg.reply("S-a futut API");
+            })
+        }
+        
+        for(let i = 0; i < count; i++) {
+            switch(arr[0]) {
+                case "pisica":
+                    get_cat();
+                break;
+    
+                case "rata":
+                    get_duck();
+                break;
+    
+                case "caine":
+                    get_dog();
+                break;
+    
+                case "vulpe":
+                    get_fox();
+                break;
+    
+                case "anime-nsfw":
+                    get_anime(arr[0]);
+                break;
+    
+                case "anime-sfw":
+                    get_anime(arr[0]);
+                break;
+                
+                default:
+                    msg.reply("Nu avem");
+                break;
+            }
+
+            msg.reply("Poftiti domnule");
+        }
+
 
     }    
 
@@ -199,7 +307,13 @@ client.on('messageCreate', async (msg) => {
         ids.filter((id) => id != msg.author.id).forEach((id) => msg.channel.send(`hai <@${id}>`))
     }
 
+    if(command === "bancuri") {
+        const bancuri = [];
+    }
 
+    if(command === "") {
+
+    }
 });
 
 
