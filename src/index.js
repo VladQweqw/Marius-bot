@@ -17,12 +17,22 @@ const SERVER_ID = '689569910141091876';
 
 client.on('ready', (c) => {
     console.log(`botalau ${c.user.tag} functioneste`);
+
+    const channel = client.channels.cache.get('994337722552549466')
+    if(channel) {
+        channel.send({
+            content: `Functionez`,
+            files: [{
+                attachment: '../start.jpg'
+            }]
+        })
+    }
+  
 });
 
 
 
 client.on('messageCreate', async (msg) => {
-    // if(message[0] !== "$") return;
     if(msg.author.bot) return;
 
     let command = msg.content.split(' ')[0].toLowerCase();
