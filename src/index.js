@@ -1,5 +1,9 @@
 
 import { Client, Guild, IntentsBitField } from 'discord.js';
+import dotenv from 'dotenv'
+dotenv.config()
+
+console.log(process.env.DISCORD_TOKEN);
 
 const client = new Client({
     intents: [
@@ -199,4 +203,4 @@ client.on('messageCreate', async (msg) => {
 });
 
 
-client.login("MTI1MzMzODU5MTUyNzA0MzA3Mw.GE-jJg.p39y8Qllff-F_NFs0gplklOP_wPN9_TWzz9trw");
+client.login(process.env.DISCORD_TOKEN);
