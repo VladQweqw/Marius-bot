@@ -24,7 +24,7 @@ client.on('messageCreate', async (msg) => {
     if(msg.author.bot) return;
 
     let command = msg.content.split(' ')[0].toLowerCase();
-    console.log(`Command: ${command}`);
+    console.log(`Command: ${command}, user: ${msg.author}`);
     
     function get_rng(range, floor = true) {
         if(floor)
@@ -195,9 +195,8 @@ client.on('messageCreate', async (msg) => {
         ids.filter((id) => id != msg.author.id).forEach((id) => msg.channel.send(`hai <@${id}>`))
     }
 
-    
 
 });
 
-
-client.login("MTI1MzMzODU5MTUyNzA0MzA3Mw.G8DsDx.L8qLmYw5ECrXYjn1K625sI9Nf_s7YsReBhu7Ig");
+// update haha
+client.login("MTI1MzMzODU5MTUyNzA0MzA3Mw.GE-jJg.p39y8Qllff-F_NFs0gplklOP_wPN9_TWzz9trw");
