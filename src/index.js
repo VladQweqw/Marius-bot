@@ -14,24 +14,24 @@ const client = new Client({
 });
 
 const SERVER_ID = '689569910141091876';
+const MY_ID = '375320688669491200';
 
 client.on('ready', (c) => {
     console.log(`botalau ${c.user.tag} functioneste`);
 
-    const channel = client.channels.cache.get('994337722552549466')
-    if(channel) {
-        channel.send({
-            content: `Functionez`,
-            files: [{
-                attachment: '../start.jpg'
-            }]
-        })
-    }
+    // const channel = client.channels.cache.get('969264040541028422')
+    // if(channel) {
+    //     channel.send({
+    //         content: `Functionez`,
+    //         files: [{
+    //             attachment: '../start.jpg'
+    //         }]
+    //     })
+    // }
   
 });
 
-
-
+let muted_users = [];
 client.on('messageCreate', async (msg) => {
     if(msg.author.bot) return;
 
@@ -52,10 +52,13 @@ client.on('messageCreate', async (msg) => {
             "help", 
             'pacanea [lista jocuri separate prin spatiu]', 
             "rng [min optional] [max]", 
+            "mute [userId] [revoke]",
+            "poll [text]",
             "gaymeter",
             "futel [user]",
             "pisica",
             "adunarea",
+            "funnymonke [channelId]",
             "dami [pisica, caine, rata, vulpe, anime-nsfw, anime-sfw] [count (max 5)]",
         ]
 
@@ -151,7 +154,7 @@ client.on('messageCreate', async (msg) => {
             return voiceChannels;
         }
 
-        if(arr[0] === '<@375320688669491200>') return msg.reply("Este administator 🤓");
+        if(arr[0] === '<@MY_ID>') return msg.reply("Este administator 🤓");
 
         const voiceIds = await get_voice_channels_ids();
         
@@ -308,7 +311,7 @@ client.on('messageCreate', async (msg) => {
 
     if(command === 'adunarea') {
         const ids = [
-            '375320688669491200',
+            'MY_ID',
             '759830191311945769',
             '493858296785272875',
             "232085801737912320",
@@ -317,14 +320,74 @@ client.on('messageCreate', async (msg) => {
         ids.filter((id) => id != msg.author.id).forEach((id) => msg.channel.send(`hai <@${id}>`))
     }
 
-    if(command === "bancuri") {
-        const bancuri = [];
+    if(command === "funnymonke") {
+        let arr = msg.content.split(' ');
+        arr.shift()
+        
+        const guild = await client.guilds.fetch(SERVER_ID);
+        const user = await guild.members.fetch(msg.author.id);
+
+        let channel = await client.channels.fetch(user.voice.channelId);
+        
+        if(arr[0]) channel =  await client.channels.fetch(arr[0]);
+
+        if(channel && channel.isVoiceBased()) {
+            const members = channel.members;
+            const userIds = members.map(member => member.id).filter((id) => id !== 'MY_ID')
+
+            const rng_user_id = userIds[get_rng(userIds.length)]
+            let kick_user = await guild.members.fetch(rng_user_id);
+            kick_user.voice.setChannel(null);
+
+            msg.reply("funny monke");
+        }
+
     }
 
-    if(command === "") {
+    if(command === 'poll') {
+        let arr = msg.content.split(' ');
+        arr.shift()
 
+        let poll_name = arr.join(" ")
+
+        const message = await msg.reply({ content: poll_name, fetchReply: false });
+        message.react("✅")
+        message.react("❌")
+        
     }
+  
+    if(command === 'mute') {
+        let arr = msg.content.split(' ');
+        arr.shift()
+
+        let user_id = arr[0].slice(2, -1);
+        let remove = arr[1] ? arr[1].trim() : '';
+        
+        if(remove === 'revoke') {
+            if(muted_users.includes(msg.author.id) && user_id !== MY_ID) return msg.delete();
+
+            muted_users = muted_users.filter((id) => id !== user_id);
+            return msg.reply("Recapatare drepturi")
+        }
+
+        if(!user_id) {
+            return msg.reply("N ai pus user")
+        }
+
+        msg.reply("Pierdere drepturi")
+        if(!muted_users.includes(user_id)) muted_users.push(user_id)
+
+    }else if(muted_users.includes(msg.author.id)) {
+        try {
+            await msg.delete();
+        }
+        catch(err) {
+            msg.reply("S a futu cv")
+        }
+    }
+    
 });
+
 
 
 client.login(process.env.DISCORD_TOKEN);
