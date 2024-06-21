@@ -1,7 +1,9 @@
 
 import { Client, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv'
-dotenv.config()
+
+// dotenv.config({path: "../.env"});
+dotenv.config();
 
 const client = new Client({
     intents: [
@@ -31,21 +33,57 @@ client.on('ready', (c) => {
   
 });
 
+let ACTIVE_TIME = 0;
+
+const important_members = [
+    MY_ID,
+    '759830191311945769',
+    '493858296785272875',
+    "232085801737912320",
+]
+
+function get_rng(range, floor = true) {
+    if(floor)
+        return Math.floor(Math.random() * range);
+
+    return Math.random() * range;
+}
+
+setInterval(() => {
+    const date = new Date();
+    const hour = date.getHours();
+    const mins = date.getMinutes();
+
+    console.log(hour, mins);
+    if(hour === 0 && mins === 0) {
+        client.channels.cache.get('969264040541028422').send("============== OROLOGIUL A BATUT =================");
+        let max_gay = 0;
+        let max_gay_id = '';
+
+        important_members.forEach((member) => {
+            let rng = get_rng(100);
+            
+            if(rng > max_gay) {
+                max_gay = rng;
+                max_gay_id = member;
+            }
+
+            client.channels.cache.get('969264040541028422').send(`<@${member}> esti ${rng}% gay astazi`);
+        })
+
+        client.channels.cache.get('969264040541028422').send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
+    }
+    ACTIVE_TIME++;
+}, 1000 * 60);
+
 let muted_users = [];
 client.on('messageCreate', async (msg) => {
     if(msg.author.bot) return;
 
+    
     let command = msg.content.split(' ')[0].toLowerCase();
     console.log(`Command: ${command}, user: ${msg.author.displayName}`);
     
-    function get_rng(range, floor = true) {
-        if(floor)
-            return Math.floor(Math.random() * range);
-    
-        return Math.random() * range;
-    }
-
-
     if(command === 'help') {
 
         const commands = [
@@ -58,6 +96,7 @@ client.on('messageCreate', async (msg) => {
             "futel [user]",
             "pisica",
             "adunarea",
+            'active-time',
             "funnymonke [channelId]",
             "dami [pisica, caine, rata, vulpe, anime-nsfw, anime-sfw] [count (max 5)]",
         ]
@@ -69,6 +108,10 @@ client.on('messageCreate', async (msg) => {
         str += '+---------------------------------+'
         msg.reply(str);
     };
+
+    if(command === 'active-time') {
+        msg.reply(`Active for ${ACTIVE_TIME} minutes`)
+    }
 
     if(command === 'pacanea') {
         let arr = msg.content.split(' ');
@@ -93,7 +136,7 @@ client.on('messageCreate', async (msg) => {
         if(arr.length === 0) return msg.reply('N ai pus limite');
 
         if(arr.length === 1) return msg.reply(    
-            Math.floor(Math.random() * n1).toString()
+            get_rng(n1).toString()
         );
         
         if(arr.length >= 2) return msg.reply(
@@ -104,6 +147,7 @@ client.on('messageCreate', async (msg) => {
     if(command === 'gaymeter') {
         const rng = get_rng(100);
         let idx = 0;
+
         const gay_images = [
             "https://i.pinimg.com/736x/25/17/a1/2517a1621222cbcae5929033803ab285.jpg", // 0 
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCSa7WAb9Mr5fAAMxa1ymUiuDzodx_iYHFZA&s", // 1,
@@ -154,7 +198,7 @@ client.on('messageCreate', async (msg) => {
             return voiceChannels;
         }
 
-        if(arr[0] === '<@MY_ID>') return msg.reply("Este administator 🤓");
+        if(arr[0] === `<@${MY_ID}>`) return msg.reply("Este administator 🤓");
 
         const voiceIds = await get_voice_channels_ids();
         
@@ -171,8 +215,8 @@ client.on('messageCreate', async (msg) => {
                         await user.voice.setChannel(channelId);
                     }
                     catch(err) {
-                        msg.reply(`Error, stutdown`)
-                        return ''
+                        return msg.reply(`Nu e in voice`)
+                        
                     }
                 })
             }else {
@@ -311,7 +355,7 @@ client.on('messageCreate', async (msg) => {
 
     if(command === 'adunarea') {
         const ids = [
-            'MY_ID',
+            MY_ID,
             '759830191311945769',
             '493858296785272875',
             "232085801737912320",
@@ -333,7 +377,7 @@ client.on('messageCreate', async (msg) => {
 
         if(channel && channel.isVoiceBased()) {
             const members = channel.members;
-            const userIds = members.map(member => member.id).filter((id) => id !== 'MY_ID')
+            const userIds = members.map(member => member.id).filter((id) => id !== MY_ID)
 
             const rng_user_id = userIds[get_rng(userIds.length)]
             let kick_user = await guild.members.fetch(rng_user_id);
@@ -387,7 +431,5 @@ client.on('messageCreate', async (msg) => {
     }
     
 });
-
-
 
 client.login(process.env.DISCORD_TOKEN);
