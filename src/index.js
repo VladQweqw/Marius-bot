@@ -2,8 +2,7 @@
 import { Client, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv'
 
-// dotenv.config({path: "../.env"});
-dotenv.config();
+dotenv.config({path: "../.env"});
 
 const client = new Client({
     intents: [
@@ -21,15 +20,15 @@ const MY_ID = '375320688669491200';
 client.on('ready', (c) => {
     console.log(`botalau ${c.user.tag} functioneste`);
 
-    // const channel = client.channels.cache.get('969264040541028422')
-    // if(channel) {
-    //     channel.send({
-    //         content: `Functionez`,
-    //         files: [{
-    //             attachment: '../start.jpg'
-    //         }]
-    //     })
-    // }
+    const channel = client.channels.cache.get('969264040541028422')
+    if(channel) {
+        channel.send({
+            content: `Functionez`,
+            files: [{
+                attachment: '../start.jpg'
+            }]
+        })
+    }
   
 });
 
@@ -49,6 +48,7 @@ function get_rng(range, floor = true) {
     return Math.random() * range;
 }
 
+const CLASA_CIVILA = client.channels.cache.get('994337722552549466')
 setInterval(() => {
     const date = new Date();
     const hour = date.getHours();
@@ -56,7 +56,7 @@ setInterval(() => {
 
     console.log(hour, mins);
     if(hour === 0 && mins === 0) {
-        client.channels.cache.get('969264040541028422').send("============== OROLOGIUL A BATUT =================");
+        CLASA_CIVILA.send("============== OROLOGIUL A BATUT =================");
         let max_gay = 0;
         let max_gay_id = '';
 
@@ -68,10 +68,10 @@ setInterval(() => {
                 max_gay_id = member;
             }
 
-            client.channels.cache.get('969264040541028422').send(`<@${member}> esti ${rng}% gay astazi`);
+            CLASA_CIVILA.send(`<@${member}> esti ${rng}% gay astazi`);
         })
 
-        client.channels.cache.get('969264040541028422').send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
+        CLASA_CIVILA.send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
     }
     ACTIVE_TIME++;
 }, 1000 * 60);
