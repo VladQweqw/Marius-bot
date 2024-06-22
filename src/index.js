@@ -80,10 +80,19 @@ let muted_users = [];
 client.on('messageCreate', async (msg) => {
     if(msg.author.bot) return;
 
-    
-    let command = msg.content.split(' ')[0].toLowerCase();
+    let command = msg.content.split(' ')[0].toLowerCase();    
+
     console.log(`Command: ${command}, user: ${msg.author.displayName}`);
-    
+
+    if(muted_users.includes(msg.author.id)) {
+        try {
+            return await msg.delete();
+        }
+        catch(err) {
+            return msg.reply("S a futu cv")
+        }
+    }
+
     if(command === 'help') {
 
         const commands = [
@@ -96,6 +105,7 @@ client.on('messageCreate', async (msg) => {
             "futel [user]",
             "pisica",
             "adunarea",
+            "spam [mesaj] [count]",
             'active-time',
             "funnymonke [channelId]",
             "dami [pisica, caine, rata, vulpe, anime-nsfw, anime-sfw] [count (max 5)]",
@@ -247,12 +257,8 @@ client.on('messageCreate', async (msg) => {
         }
         
         async function get_duck() {
-            await fetch('https://random-d.uk/api/random').then((resp) => resp.json()).then((x) => {
-                msg.reply({
-                    files: [{
-                        attachment: x.url
-                    }]
-                })
+            await fetch('https://random-d.uk/api/random').then((resp) => resp.json()).then(async(x) => {
+                sendImage(x.url)
             })
             .catch((err) => {
                 console.log(err);
@@ -261,12 +267,8 @@ client.on('messageCreate', async (msg) => {
         }
 
         async function get_cat() {
-            await fetch('https://api.thecatapi.com/v1/images/search').then((resp) => resp.json()).then((x) => {
-                msg.reply({
-                    files: [{
-                        attachment: x[0].url
-                    }]
-                })
+            await fetch('https://api.thecatapi.com/v1/images/search').then((resp) => resp.json()).then(async(x) => {
+                await sendImage(x[0].url)
             })
             .catch((err) => {
                 console.log(err);
@@ -275,12 +277,8 @@ client.on('messageCreate', async (msg) => {
         }
 
         async function get_dog() {
-            await fetch(' https://dog.ceo/api/breeds/image/random').then((resp) => resp.json()).then((x) => {
-                msg.reply({
-                    files: [{
-                        attachment: x.message
-                    }]
-                })
+            await fetch(' https://dog.ceo/api/breeds/image/random').then((resp) => resp.json()).then( async (x) => {
+                await sendImage(x.message)
             })
             .catch((err) => {
                 console.log(err);
@@ -289,12 +287,8 @@ client.on('messageCreate', async (msg) => {
         }
 
         async function get_fox() {
-            await fetch('https://randomfox.ca/floof/').then((resp) => resp.json()).then((x) => {
-                msg.reply({
-                    files: [{
-                        attachment: x.image
-                    }]
-                })
+            await fetch('https://randomfox.ca/floof/').then((resp) => resp.json()).then( async (x) => {
+                await sendImage(x.image)
             })
             .catch((err) => {
                 console.log(err);
@@ -303,12 +297,8 @@ client.on('messageCreate', async (msg) => {
         }
 
         async function get_anime(category) {
-            await fetch(`https://api.waifu.pics/${category.split('-')[1]}/waifu`).then((resp) => resp.json()).then((x) => {
-                msg.reply({
-                    files: [{
-                        attachment: x.url
-                    }]
-                })
+            await fetch(`https://api.waifu.pics/${category.split('-')[1]}/waifu`).then((resp) => resp.json()).then(async (x) => {
+                await sendImage(x.url)
             })
             .catch((err) => {
                 console.log(err);
@@ -316,6 +306,26 @@ client.on('messageCreate', async (msg) => {
             })
         }
         
+        async function sendImage(url) {
+            const message = await msg.reply({
+                files: [{
+                    attachment: url
+                }],
+                fetchReply: true
+            });
+            
+            message.react("1️⃣")
+            message.react("2️⃣")
+            message.react('3️⃣')
+            message.react("4️⃣")
+            message.react('5️⃣')
+            message.react('6️⃣')
+            message.react('7️⃣')
+            message.react('8️⃣')
+            message.react('9️⃣')
+            message.react('🔟')
+        }
+
         for(let i = 0; i < count; i++) {
             switch(arr[0]) {
                 case "pisica":
@@ -373,7 +383,7 @@ client.on('messageCreate', async (msg) => {
 
         let channel = await client.channels.fetch(user.voice.channelId);
         
-        if(arr[0]) channel =  await client.channels.fetch(arr[0]);
+        if(arr[0]) channel = await client.channels.fetch(arr[0]);
 
         if(channel && channel.isVoiceBased()) {
             const members = channel.members;
@@ -421,12 +431,19 @@ client.on('messageCreate', async (msg) => {
         msg.reply("Pierdere drepturi")
         if(!muted_users.includes(user_id)) muted_users.push(user_id)
 
-    }else if(muted_users.includes(msg.author.id)) {
-        try {
-            await msg.delete();
-        }
-        catch(err) {
-            msg.reply("S a futu cv")
+    }
+
+    if(command === 'spam') {
+        let arr = msg.content.split(' ');
+        arr.shift()
+
+        let message = arr[0];
+        let count = Number(arr[1]) || 1;
+
+        
+
+        for(let i = 0; i < count; i++) {
+            msg.channel.send(message);
         }
     }
     
