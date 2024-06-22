@@ -39,6 +39,7 @@ const important_members = [
     '759830191311945769',
     '493858296785272875',
     "232085801737912320",
+    "689768718984806406"
 ]
 
 function get_rng(range, floor = true) {
@@ -48,15 +49,14 @@ function get_rng(range, floor = true) {
     return Math.random() * range;
 }
 
-const CLASA_CIVILA = client.channels.cache.get('994337722552549466')
 setInterval(() => {
     const date = new Date();
     const hour = date.getHours();
     const mins = date.getMinutes();
 
-    console.log(hour, mins);
-    if(hour === 0 && mins === 0) {
-        CLASA_CIVILA.send("============== OROLOGIUL A BATUT =================");
+
+    if(hour === 23 && mins === 59) {
+        client.channels.cache.get('994337722552549466').send("============== OROLOGIUL A BATUT =================");
         let max_gay = 0;
         let max_gay_id = '';
 
@@ -68,11 +68,12 @@ setInterval(() => {
                 max_gay_id = member;
             }
 
-            CLASA_CIVILA.send(`<@${member}> esti ${rng}% gay astazi`);
+            client.channels.cache.get('994337722552549466').send(`<@${member}> esti ${rng}% gay astazi`);
         })
 
-        CLASA_CIVILA.send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
+        client.channels.cache.get('994337722552549466').send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
     }
+
     ACTIVE_TIME++;
 }, 1000 * 60);
 
