@@ -2,6 +2,8 @@
 import { Client, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv'
 
+import cron from "node-cron"
+
 dotenv.config({path: "../.env"});
 
 const client = new Client({
@@ -49,33 +51,30 @@ function get_rng(range, floor = true) {
     return Math.random() * range;
 }
 
-setInterval(() => {
-    const date = new Date();
-    const hour = date.getHours();
-    const mins = date.getMinutes();
+cron.schedule('0 0 * * *', daily_gay)
+cron.schedule('0 10 * * *', water_plants)
 
+function water_plants() {
+    client.channels.cache.get('994337722552549466').send(`<@689768718984806406> uda plantele`);
+}
+function daily_gay() {
+    client.channels.cache.get('994337722552549466').send("============== OROLOGIUL A BATUT =================");
+    let max_gay = 0;
+    let max_gay_id = '';
 
-    if(hour === 23 && mins === 59) {
-        client.channels.cache.get('994337722552549466').send("============== OROLOGIUL A BATUT =================");
-        let max_gay = 0;
-        let max_gay_id = '';
+    important_members.forEach((member) => {
+        let rng = get_rng(100);
+        
+        if(rng > max_gay) {
+            max_gay = rng;
+            max_gay_id = member;
+        }
 
-        important_members.forEach((member) => {
-            let rng = get_rng(100);
-            
-            if(rng > max_gay) {
-                max_gay = rng;
-                max_gay_id = member;
-            }
+        client.channels.cache.get('994337722552549466').send(`<@${member}> esti ${rng}% gay astazi`);
+    })
 
-            client.channels.cache.get('994337722552549466').send(`<@${member}> esti ${rng}% gay astazi`);
-        })
-
-        client.channels.cache.get('994337722552549466').send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
-    }
-
-    ACTIVE_TIME++;
-}, 1000 * 60);
+    client.channels.cache.get('994337722552549466').send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
+}
 
 let muted_users = [];
 client.on('messageCreate', async (msg) => {
