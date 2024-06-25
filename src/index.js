@@ -51,8 +51,8 @@ function get_rng(range, floor = true) {
     return Math.random() * range;
 }
 
-cron.schedule('59 23 * *', daily_gay)
-cron.schedule('00 10 * *', water_plants)
+cron.schedule('* 59 23 * *', daily_gay)
+cron.schedule('* 00 10 * *', water_plants)
 
 function water_plants() {
     client.channels.cache.get('994337722552549466').send(`<@689768718984806406> uda plantele`);
