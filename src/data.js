@@ -49,6 +49,8 @@ export function calculateMsToString() {
             }else {
                 str += time + " " + time_format[index][1];
             }
+
+            str += " ";
         }
     })
     

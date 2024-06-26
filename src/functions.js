@@ -336,10 +336,10 @@ export const functions = [
         syntax: "help"
     },
     {
-        call_name: "active-time",
+        call_name: "activetime",
         callback: active_time,
         description: "returns the time since the bot is runnng",
-        syntax: "active-time"
+        syntax: "activetime"
     },
     {
         call_name: "pacanea",
