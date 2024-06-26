@@ -1,6 +1,19 @@
 import { get_rng, details, calculateMsToString, gay_images} from './data.js'; 
 import { muted_users, client } from './index.js';
 
+async function use_fetch(url) {
+    try {
+        const resp = await fetch(url);
+        const data = await resp.json();
+
+        return data;
+    }
+    catch(err) {
+        console.log(err);
+        return "error ";
+    }
+}
+
 function help(msg) {
     let str = '=== HELP ===\n';
     
@@ -127,19 +140,6 @@ async function dami(msg) {
             count = 1;
         }
         
-        async function use_fetch(url) {
-            try {
-                const resp = await fetch(url);
-                const data = await resp.json();
-
-                return data;
-            }
-            catch(err) {
-                console.log(err);
-                return "error ";
-            }
-        }
-        
         async function get_duck() {
             const data = await use_fetch('https://random-d.uk/api/random')
 
@@ -191,9 +191,29 @@ async function dami(msg) {
             message.react('9️⃣')
             message.react('🔟')
         }
+        let ammount = Number(arr[1])
+        if(!isNaN(ammount) && ammount > 1) {
+            if(ammount > 10) return msg.reply("Abuz")
+            let count = 0;
 
-        for(let i = 0; i < count; i++) {
-            switch(arr[0]) {
+        const interval = setInterval(() => {
+            if(count >= ammount) return clearInterval(interval)
+                count++;
+                msg.channel.send(`Imaginea ${count}, votati`)
+                return_img(arr[0])
+                if(count !== ammount - 1) msg.channel.send("Vine alta in 10 secunde...")
+            }, 20000);
+
+
+        }else if(!arr[1]) {
+            return_img(arr[0])
+        }else {
+            msg.reply("Invalid parameters...")
+        
+        }
+    
+        function return_img(cat) {
+            switch(cat) {
                 case "pisica":
                     get_cat();
                 break;
@@ -211,20 +231,21 @@ async function dami(msg) {
                 break;
     
                 case "anime-nsfw":
-                    get_anime(arr[0]);
+                    get_anime(cat);
                 break;
     
                 case "anime-sfw":
-                    get_anime(arr[0]);
+                    get_anime(cat);
                 break;
                 
                 default:
                     msg.reply("Nu avem");
                 break;
             }
-
-            msg.reply("Poftiti domnule");
         }
+
+        msg.reply("Poftiti domnule");
+        
 }
 
 function adunarea(msg) {
@@ -306,6 +327,7 @@ function spam(msg) {
     }
 }
 
+
 export const functions = [
     {
         call_name: "help",
@@ -347,7 +369,7 @@ export const functions = [
         call_name: "dami",
         callback: dami,
         description: "returns an image with rating buttons 1-10",
-        syntax: "dami [caine, pisica, vulpe, anime-nsfw, anime-sfw] [count <=5]"
+        syntax: "dami [caine, pisica, vulpe, anime-nsfw, anime-sfw] [count <= 15]"
     },
     {
         call_name: "adunarea",
