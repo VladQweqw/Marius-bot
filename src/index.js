@@ -2,7 +2,6 @@
 import { Client, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv'
 
-import { cron_setup } from './cron_setup.js';
 import { functions } from './functions.js';
 
 dotenv.config({path: "../.env"});
@@ -18,6 +17,13 @@ export const client = new Client({
 });
 
 client.on('ready', (c) => {
+    if(client) {
+        import('./cron_setup.js').then((module) => {
+            module.cron_setup.init(client)
+        })
+        .catch((err) => console.log("Err: " + err))
+    }
+
     console.log(`botalau ${c.user.tag} functioneste`);
 
     const channel = client.channels.cache.get('969264040541028422')
@@ -31,7 +37,6 @@ client.on('ready', (c) => {
     }
 });
 
-cron_setup.init()
 
 export let muted_users = [];
 

@@ -1,6 +1,5 @@
 import cron from "node-cron"
-
-import { water_plants, daily_gay } from './data.js';
+import { water_plants, daily_gay } from "./cron_functions.js"
 
 const cron_options = {
     scheduled: true,
@@ -23,11 +22,10 @@ const cron_schedules = [
 ]
 
 // initialize schedule messages
-
-function init() {
-    cron_schedules.forEach(({ name, time, callback, options}) => {
-        cron.schedule(time, callback, options);
-        console.log(name + " scheduled");
+function init(client) {
+    cron_schedules.forEach(({ name, time, callback, options}, index) => {
+        cron.schedule(time, () => callback(client), options);
+        console.log(`${index + 1}. ${name} scheduled!`);
     })
 }
 

@@ -28,43 +28,14 @@ export function get_rng(range, floor = true) {
     return Math.random() * range;
 }
 
-export function water_plants() {
-    client.channels.cache.get(CLASA_CIVILA).send(`<@689768718984806406> uda plantele`);
-};
-
-export function daily_gay() {
-    try {
-        client.channels.cache.get(CLASA_CIVILA).send("============== OROLOGIUL A BATUT =================");
-    }
-    catch(err) {
-        console.log("Eroare la daily gaymeter, nu gaseste canalul cu id");
-    }
-
-    let max_gay = 0;
-    let max_gay_id = '';
-
-    important_members.forEach((member) => {
-        let rng = get_rng(100);
-        
-        if(rng > max_gay) {
-            max_gay = rng;
-            max_gay_id = member;
-        }
-
-        client.channels.cache.get(CLASA_CIVILA).send(`<@${member}> esti ${rng}% gay astazi`);
-    })
-
-    client.channels.cache.get(CLASA_CIVILA).send(`Cel mai gay nigger de astazi este <@${max_gay_id}> cu ${max_gay}%`);
-}
-
 export function calculateMsToString() {
     const ms = Math.floor(new Date().getTime() - STARTED_TIME);
     console.log(ms);
     let str = ''
 
-    const seconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(ms / 1000 / 60);
-    const hours = Math.floor(ms / 1000 / 3600);
+    const seconds = Math.floor(ms / 1000) % 60;
+    const minutes = Math.floor(ms / 1000 / 60) % 60;
+    const hours = Math.floor(ms / 1000 / 3600) % 24;
     const days = Math.floor(ms / 1000 / 3600 / 24);
 
     const time_arr = [days, hours, minutes, seconds]
