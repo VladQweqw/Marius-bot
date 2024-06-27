@@ -1,5 +1,8 @@
+import { cron_setup } from './cron_setup.js';
 import { get_rng, details, calculateMsToString, gay_images} from './data.js'; 
 import { muted_users, client } from './index.js';
+
+import cron from "node-cron"
 
 async function use_fetch(url) {
     try {
@@ -327,6 +330,28 @@ function spam(msg) {
     }
 }
 
+function change_schedule(msg) {
+    let arr = msg.content.split(' ');
+    arr.shift()
+
+    // change-schedule gaymeter 22 30
+
+    const schedule = arr[0];
+
+    if(schedule) {
+        const item = cron_setup.cron_schedules.find((item) => item.id === schedule);
+
+        msg.reply(`${item.name} at ${item.format_time}`)
+    }else {
+        
+        msg.reply(`Scheduled tasks are: ${
+            cron_setup.cron_schedules.map((cron_item, index) => {
+                return `\n${index + 1}. ${cron_item.name} at ${cron_item.format_time}`
+            })
+        }`)
+    }
+
+}
 
 export const functions = [
     {
@@ -334,6 +359,12 @@ export const functions = [
         callback: help,
         description: "returs a list of available commands",
         syntax: "help"
+    },
+    {
+        call_name: "getschedules",
+        callback: change_schedule,
+        description: "returns the taks scheduled",
+        syntax: "getschedules"
     },
     {
         call_name: "activetime",
