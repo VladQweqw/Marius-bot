@@ -7,11 +7,12 @@ const cron_options = {
     timezone: "Europe/Bucharest"
 }
 
+let daily_gay_rng = get_rng(59)
 let cron_schedules = [
     {
         name: "Daily Gay Meter",
-        time: `${get_rng(59)} 23 * * *`,
-        format_time: "23:00",
+        time: `${daily_gay_rng} 23 * * *`,
+        format_time:`23:${daily_gay_rng}`,
         callback: daily_gay,
         options: cron_options,
         id: "daily_gay",
